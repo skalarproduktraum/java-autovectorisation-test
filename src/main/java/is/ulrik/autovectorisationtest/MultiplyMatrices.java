@@ -100,7 +100,7 @@ public class MultiplyMatrices {
 
         for(int k = 0; k < 4; k++) {
           // Math.fma(a,b,c) = a * b + c
-          Math.fma(context.A.getFloatArray()[i*4 + k], context.B.getFloatArray()[k*4 + j], context.C.getFloatArray()[i * 4 + j]);
+          context.C.getFloatArray()[i * 4 + j] = Math.fma(context.A.getFloatArray()[i*4 + k], context.B.getFloatArray()[k*4 + j], context.C.getFloatArray()[i * 4 + j]);
         }
 
         context.C.getFloatArray()[i * 4 + j] = sum;
