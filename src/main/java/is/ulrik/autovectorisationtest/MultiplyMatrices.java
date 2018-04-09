@@ -32,6 +32,7 @@
 package is.ulrik.autovectorisationtest;
 
 import cleargl.GLMatrix;
+import com.jogamp.opengl.math.FloatUtil;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.Random;
@@ -47,7 +48,7 @@ import static org.openjdk.jmh.annotations.Mode.AverageTime;
         "-XX:+UnlockDiagnosticVMOptions",
         "-XX:CompileCommand=print,*BenchmarkSIMDBlog.array1"})
 @Warmup(iterations = 5)
-@Measurement(iterations = 10)
+@Measurement(iterations = 1)
 public class MultiplyMatrices {
 
   @State(Scope.Thread)
@@ -57,9 +58,11 @@ public class MultiplyMatrices {
     public final GLMatrix B = new GLMatrix();
     // result matrix
     public GLMatrix C = new GLMatrix();
+    public static final GLMatrix zero = new GLMatrix(new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f});
 
     @Setup
     public void setup() {
+      C = zero.clone();
       Random r = new Random();
       for(int i = 0; i < 16; i++) {
         A.getFloatArray()[i] = r.nextFloat();
@@ -71,10 +74,7 @@ public class MultiplyMatrices {
 
   @Benchmark
   public void multiplyMatricesFloatUtilGLMatrix(Context context) {
-    context.A.mult(context.B);
-    for(int i = 0; i < 16; i++) {
-      context.C.getFloatArray()[i] = context.A.getFloatArray()[i];
-    }
+    FloatUtil.multMatrix(context.A.getFloatArray(), context.B.getFloatArray(), context.C.getFloatArray());
   }
 
   @Benchmark
@@ -96,14 +96,10 @@ public class MultiplyMatrices {
   public void multiplyMatricesLoopFMA(Context context) {
     for(int i = 0; i < 4; i++) {
       for(int j = 0; j < 4; j++) {
-        float sum = 0;
-
         for(int k = 0; k < 4; k++) {
           // Math.fma(a,b,c) = a * b + c
           context.C.getFloatArray()[i * 4 + j] = Math.fma(context.A.getFloatArray()[i*4 + k], context.B.getFloatArray()[k*4 + j], context.C.getFloatArray()[i * 4 + j]);
         }
-
-        context.C.getFloatArray()[i * 4 + j] = sum;
       }
     }
   }
