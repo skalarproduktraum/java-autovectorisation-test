@@ -60,7 +60,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
         <dependency>
             <groupId>net.clearvolume</groupId>
             <artifactId>cleargl</artifactId>
-            <version>2.1.4</version>
+            <version>2.2.10</version>
         </dependency>
     </dependencies>
 
@@ -91,8 +91,8 @@ THE POSSIBILITY OF SUCH DAMAGE.
                 <version>3.1</version>
                 <configuration>
                     <compilerVersion>${javac.target}</compilerVersion>
-                    <source>${javac.target}</source>
-                    <target>${javac.target}</target>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
             <plugin>
